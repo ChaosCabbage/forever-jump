@@ -1,12 +1,11 @@
 
-requirejs(['parabola', 'draw', 'random'],
-function (makeParabola, graphics, random) {
+requirejs(['parabola', 'draw', 'floorgeneration'],
+function (makeParabola, graphics, floorGen) {
 	
-	var generator = random(123);	
-	function generateBetween(lower, upper) {
-		var t = generator();
-		return t * lower + (1-t) * upper;
-	}
+	var stage_limits = {
+		left: 20,
+		right: graphics.size.width() - 20
+	};
 	
 	var floors = 
 		[	{ left:0, right:graphics.size.width(), y:30 }	];
@@ -31,38 +30,18 @@ function (makeParabola, graphics, random) {
 	}
 	
 	function generateNewFloor(previous_floor) {
-		var parabola = createJumpParabola({
-			x: generateBetween(previous_floor.left, previous_floor.right),
-			y: previous_floor.y
-		});
-		
-		// Want to place the new floor somewhere in the range of the parabola,
-		// between about 1/4 and 3/4 of the second half.
-		
-		var max_param = parabola.apexParameter() * 2;
-		var lower_limit = max_param * (5/8);
-		var upper_limit = max_param * (7/8);
-		
-		var new_point = parabola.evaluate(generateBetween(lower_limit,upper_limit));
-		var new_width = generateBetween(20, 200);
-		
-		if (current_direction > 0)  {
-			new_floor = {
-				left: new_point.x,
-				right: new_point.x + new_width,
-				y: new_point.y
-			};			
-		} else {
-			new_floor = {
-				left: new_point.x - new_width,
-				right: new_point.x,
-				y: new_point.y
-			};	
-		}
+		var allowed_widths = {lower: 20, upper: 100};
+		var new_floor = floorGen(
+			previous_floor, 
+			createJumpParabola({ x: 0, y: 0 }), 
+			current_direction, 
+			stage_limits, 
+			allowed_widths
+		);
 		
 		return {
-			floor: new_floor,
-			parabola: parabola
+			floor: new_floor.floor,
+			parabola: createJumpParabola(new_floor.jump_position)
 		};		
 	}	
 
@@ -74,7 +53,9 @@ function (makeParabola, graphics, random) {
 			latest_parabola = floor.parabola;
 			floors.push(floor.floor);
 			
-			current_direction *= -1;
+			if ((floor.floor.right == stage_limits.right) || (floor.floor.left == stage_limits.left)) {
+				current_direction *= -1;
+			}			
 
 			draw();	
 			
