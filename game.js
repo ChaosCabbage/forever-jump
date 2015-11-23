@@ -12,8 +12,6 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		
 	var timestep = 1/30;
 	
-	var latest_parabola;
-	
 	var settings = {
 		x_speed: 25,
 		jump_speed: 50,
@@ -35,52 +33,62 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		floors.forEach(graphics.drawFloor);
 	}
 	
-	function generateNewFloor(previous_floor, direction) {
-		var allowed_widths = {lower: 25, upper: 100};
-		var new_floor = floorGen(
-			previous_floor, 
-			createJumpParabola({ x: 0, y: 0 }, direction), 
-			direction, 
-			stage_limits, 
-			allowed_widths
-		);
+	function makeFloorGenerator() {
+	
+		function generateNewFloor(previous_floor, direction) {
+			var allowed_widths = {lower: 25, upper: 100};
+			var new_floor = floorGen(
+				previous_floor, 
+				createJumpParabola({ x: 0, y: 0 }, direction), 
+				direction, 
+				stage_limits, 
+				allowed_widths
+			);
+			
+			return new_floor.floor;
+		};
+		
+		var floor_generation_direction = 1;
+		
+		function generateFloorsUpTo(final_y) {
+			
+			var latest_floor = floors[floors.length-1];
+			if (latest_floor.y > final_y) { return; }		
+			
+			var floor = generateNewFloor(latest_floor, floor_generation_direction);
+			floors.push(floor);
+				
+			if ((floor.right == stage_limits.right) || (floor.left == stage_limits.left)) {
+				floor_generation_direction *= -1;
+			}		
+			
+			generateFloorsUpTo(final_y);
+		};
 		
 		return {
-			floor: new_floor.floor,
-			parabola: createJumpParabola(new_floor.jump_position, direction)
-		};		
+			generateFloorsUpTo: generateFloorsUpTo
+		};
 	};
-	
-	var floor_generation_direction = 1;
-	function generateFloorsUpTo(final_y) {
-		
-		// Recursion with a global variable! Hahaha what am I even doing.
-		
-		var latest_floor = floors[floors.length-1];
-		if (latest_floor.y > final_y) { return; }		
-		
-		var floor = generateNewFloor(latest_floor, floor_generation_direction);
-		latest_parabola = floor.parabola;
-		floors.push(floor.floor);
-			
-		if ((floor.floor.right == stage_limits.right) || (floor.floor.left == stage_limits.left)) {
-			floor_generation_direction *= -1;
-		}		
-		
-		generateFloorsUpTo(final_y);
-				
-	}
 	
 
 	function start() {
 		
-		generateFloorsUpTo(graphics.size.height());
+		var floorGenerator = makeFloorGenerator();
+		floorGenerator.generateFloorsUpTo(graphics.size.height());
 		
 		window.addEventListener("keydown", function(evt) {
-			if (evt.keyCode == 32) {
-				bloke.jump();
-			}
-		});
+			if (evt.keyCode == 32) { 
+				block.jump();
+				evt.preventDefault();
+			}			
+		}, false);
+		
+		var game_area = document.getElementById("game");
+		game_area.addEventListener("click", bloke.jump, false);
+		game_area.addEventListener("touchstart", bloke.jump, false);
+		game_area.addEventListener("touchend", function(evt) {
+			evt.preventDefault();
+		}, false);
 		
 		setInterval(function() {
 			bloke.update();
