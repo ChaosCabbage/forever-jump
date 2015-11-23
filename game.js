@@ -14,8 +14,8 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 	
 	var settings = {
 		x_speed: 25,
-		jump_speed: 50,
-		gravity: 15
+		jump_speed: 70,
+		gravity: 20
 	};	
 	
 	var bloke = makeBloke(settings, timestep, floors, stage_limits);
@@ -26,17 +26,22 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 							settings.gravity);
 	}
 
-	function draw() {
+	function viewport_y() {
+		return Math.max(0, bloke.y() - 200);
+	}
+	
+	function draw() {	
+		var view = viewport_y();		
 		graphics.wipe("AntiqueWhite");
 		graphics.drawWalls();
-		graphics.drawBloke(bloke);		
-		floors.forEach(graphics.drawFloor);
+		graphics.drawBloke(bloke, view);		
+		floors.forEach(function(floor){ graphics.drawFloor(floor, view); });
 	}
 	
 	function makeFloorGenerator() {
 	
 		function generateNewFloor(previous_floor, direction) {
-			var allowed_widths = {lower: 25, upper: 100};
+			var allowed_widths = {lower: 30, upper: 150};
 			var new_floor = floorGen(
 				previous_floor, 
 				createJumpParabola({ x: 0, y: 0 }, direction), 
@@ -93,6 +98,7 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		setInterval(function() {
 			bloke.update();
 			draw();
+			floorGenerator.generateFloorsUpTo(graphics.size.height() + viewport_y());
 		}, timestep);
 	}
 
