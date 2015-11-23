@@ -78,7 +78,7 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		
 		window.addEventListener("keydown", function(evt) {
 			if (evt.keyCode == 32) { 
-				block.jump();
+				bloke.jump();
 				evt.preventDefault();
 			}			
 		}, false);
