@@ -27,7 +27,18 @@ define(function() {
 	function drawBloke(bloke, viewport_bottom_y) {
 		var y = yFromGameY(bloke.y(), viewport_bottom_y);
 		the_canvas_context.fillStyle = "black";
-		the_canvas_context.fillRect(bloke.x() - 5, y - 20, 10, 20);
+		
+		the_canvas_context.beginPath();
+		the_canvas_context.moveTo(bloke.x() - 1, y     );
+		the_canvas_context.lineTo(bloke.x() - 5, y - 20);
+		the_canvas_context.lineTo(bloke.x()    , y - 40);
+		the_canvas_context.lineTo(bloke.x() + 5, y - 20);
+		the_canvas_context.lineTo(bloke.x() + 1, y     );
+		the_canvas_context.fill();
+		
+		the_canvas_context.beginPath();
+		the_canvas_context.arc(bloke.x(), y - 40, 8, 0,2*Math.PI);
+		the_canvas_context.fill();
 	}
 
 	function drawParabola(parabola, viewport_bottom_y) {
@@ -54,6 +65,12 @@ define(function() {
 		the_canvas_context.fillStyle = "black";
 		the_canvas_context.fillRect(floor.left,y,floor.right-floor.left,floorThickness);
 	}
+	
+	function drawHeight(height) {
+		the_canvas_context.font = "30px Arial";
+		the_canvas_context.fillStyle = "red";
+		the_canvas_context.fillText(Math.floor(height).toString(),20,30);
+	}
 
 	return {
 		size: {width: w, height: h },
@@ -61,6 +78,7 @@ define(function() {
 		drawWalls: drawWalls,
 		drawParabola: drawParabola,
 		drawFloor: drawFloor,
-		drawBloke: drawBloke
+		drawBloke: drawBloke,
+		drawHeight: drawHeight
 	};
 });

@@ -36,12 +36,13 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		graphics.drawWalls();
 		graphics.drawBloke(bloke, view);		
 		floors.forEach(function(floor){ graphics.drawFloor(floor, view); });
+		graphics.drawHeight(bloke.y());
 	}
 	
 	function makeFloorGenerator() {
 	
 		function generateNewFloor(previous_floor, direction) {
-			var allowed_widths = {lower: 30, upper: 150};
+			var allowed_widths = {lower: 30, upper: 110};
 			var new_floor = floorGen(
 				previous_floor, 
 				createJumpParabola({ x: 0, y: 0 }, direction), 
