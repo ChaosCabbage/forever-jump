@@ -10,15 +10,13 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 	var floors = 
 		[	{ left:0, right:graphics.size.width(), y:30 }	];
 		
-	var timestep = 1/30;
-	
 	var settings = {
-		x_speed: 25,
-		jump_speed: 70,
-		gravity: 20
+		x_speed: 250,
+		jump_speed: 700,
+		gravity: 2000
 	};	
 	
-	var bloke = makeBloke(settings, timestep, floors, stage_limits);
+	var bloke = makeBloke(settings, floors, stage_limits);
 		
 	function createJumpParabola(start_position, direction) {
 		return makeParabola(start_position, 
@@ -89,18 +87,36 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 			}			
 		}, false);
 		
-		var game_area = document.getElementById("game");
-		game_area.addEventListener("click", bloke.jump, false);
-		game_area.addEventListener("touchstart", bloke.jump, false);
-		game_area.addEventListener("touchend", function(evt) {
+		function preventEvent(evt) {
 			evt.preventDefault();
-		}, false);
+			evt.stopPropagation();
+			return false;
+		};		
 		
-		setInterval(function() {
-			bloke.update();
+		window.addEventListener("touchstart", function(evt) {
+			bloke.jump();
+			return preventEvent(evt);
+		}, false);
+		window.addEventListener("click", preventEvent, false);
+		window.addEventListener("touchend", preventEvent, false);
+		window.addEventListener("touchmove", preventEvent, false);
+		window.addEventListener("scroll", preventEvent, false);
+		
+		var previous_time = null;
+		function step(timestamp) {
+			if (!previous_time) { previous_time = timestamp; }
+			var seconds_elapsed = (timestamp - previous_time) / 1000;
+			
+			bloke.update(seconds_elapsed);
 			draw();
 			floorGenerator.generateFloorsUpTo(graphics.size.height() + viewport_y());
-		}, timestep);
+			
+			previous_time = timestamp;
+			window.requestAnimationFrame(step);
+		};
+		window.requestAnimationFrame(step);
+		
+		
 	}
 
 	start();

@@ -1,5 +1,5 @@
 define(function() {
-	return function makeBloke(jump_settings, timestep, floors, stage_limits) {
+	return function makeBloke(jump_settings, floors, stage_limits) {
 		var current_direction = 1;
 		
 		var x = (stage_limits.right + stage_limits.left) / 2;
@@ -28,19 +28,19 @@ define(function() {
 			return floors.some(touchingFloor);
 		}
 		
-		var update = function() {
-			x += timestep * jump_settings.x_speed * current_direction;
+		var update = function(seconds_elapsed) {
+			x += seconds_elapsed * jump_settings.x_speed * current_direction;
 			if (touchingWall()) {
 				current_direction *= -1;
 			}
 			
-			y_velocity -= timestep * jump_settings.gravity;
+			y_velocity -= seconds_elapsed * jump_settings.gravity;
 			
 			if (onSolidGround()) {
 				y_velocity = 0;
 			}
 			
-			y += timestep * y_velocity;			
+			y += seconds_elapsed * y_velocity;			
 		};
 		
 		var jump = function() {

@@ -3,7 +3,7 @@ define(function() {
 	var the_game_canvas = document.getElementById("game");
 	var the_canvas_context = the_game_canvas.getContext("2d");
 
-	the_game_canvas.setAttribute("width", the_game_canvas.offsetWidth);
+	the_game_canvas.setAttribute("width", 500);
 	the_game_canvas.setAttribute("height", the_game_canvas.offsetHeight);
 
 	function w() { return the_game_canvas.width; }		
