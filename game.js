@@ -7,7 +7,7 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		right: graphics.size.width() - 20
 	};
 	
-	var floors = 
+	var the_floors = 
 		[	{ left:0, right:graphics.size.width(), y:30 }	];
 		
 	var settings = {
@@ -16,7 +16,7 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		gravity: 2000
 	};	
 	
-	var bloke = makeBloke(settings, floors, stage_limits);
+	var bloke = makeBloke(settings, the_floors, stage_limits);
 		
 	function createJumpParabola(start_position, direction) {
 		return makeParabola(start_position, 
@@ -33,11 +33,11 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		graphics.wipe("AntiqueWhite");
 		graphics.drawWalls();
 		graphics.drawBloke(bloke, view);		
-		floors.forEach(function(floor){ graphics.drawFloor(floor, view); });
+		the_floors.forEach(function(floor){ graphics.drawFloor(floor, view); });
 		graphics.drawHeight(bloke.y());
 	}
 	
-	function makeFloorGenerator() {
+	function makeFloorGenerator(floors) {
 	
 		function generateNewFloor(previous_floor, direction) {
 			var allowed_widths = {lower: 30, upper: 110};
@@ -77,21 +77,21 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 
 	function start() {
 		
-		var floorGenerator = makeFloorGenerator();
+		var floorGenerator = makeFloorGenerator(the_floors);
 		floorGenerator.generateFloorsUpTo(graphics.size.height());
-		
-		window.addEventListener("keydown", function(evt) {
-			if (evt.keyCode == 32) { 
-				bloke.jump();
-				evt.preventDefault();
-			}			
-		}, false);
 		
 		function preventEvent(evt) {
 			evt.preventDefault();
 			evt.stopPropagation();
 			return false;
 		};		
+		
+		window.addEventListener("keydown", function(evt) {
+			if (evt.keyCode == 32) { 
+				bloke.jump();
+				return preventEvent(evt);
+			}			
+		}, false);
 		
 		window.addEventListener("touchstart", function(evt) {
 			bloke.jump();

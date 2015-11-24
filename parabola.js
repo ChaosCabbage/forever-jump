@@ -14,9 +14,17 @@ define(function() {
 		
 		var t_apex = vy0 / pixel_gravity;
 		
+		var solveForY = function(y) {
+			// We all know the quadratic formula, don't we?
+			var determinent = (vy0 * vy0) + 2*pixel_gravity*(y0 - y);
+			if (determinent < 0) { return null;	} // unicorns and pixies!
+			return (-vy0 + Math.sqrt(determinent)) / (-pixel_gravity);		
+		}
+		
 		return {
 			evaluate: function(t) { return {x: x(t), y: y(t)}; },
-			apexParameter: function() { return t_apex; }
+			apexParameter: function() { return t_apex; },
+			solveForY: solveForY
 		};		
 	
 	};
