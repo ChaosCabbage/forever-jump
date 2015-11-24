@@ -49,7 +49,7 @@ define(function() {
 		
 		var jumpCollision = function(new_pos) {
 			if (_y_velocity > 0) { 
-				return false; // Pass through floors while moving upwards
+				return null; // Pass through floors while moving upwards
 			}			
 			return collideFloors(floors, pos(), new_pos);
 		};
