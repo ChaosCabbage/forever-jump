@@ -40,7 +40,7 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 	function makeFloorGenerator(floors) {
 	
 		function generateNewFloor(previous_floor, direction) {
-			var allowed_widths = {lower: 30, upper: 110};
+			var allowed_widths = {lower: 40, upper: 110};
 			var new_floor = floorGen(
 				previous_floor, 
 				createJumpParabola({ x: 0, y: 0 }, direction), 

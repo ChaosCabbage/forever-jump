@@ -33,12 +33,12 @@ define(["./random"], function(random) {
 		return Math.abs(first_point.x - origin.x);
 	}
 	
-	
+	var EDGE_LEEWAY = 12; // probably needs to be more clever
 	
 	function safeStartLimits(previous_floor, max_jump_width, stage_limits, min_width, direction) {
 		
-		var max_x = previous_floor.right;
-		var min_x = previous_floor.left;
+		var max_x = previous_floor.right - EDGE_LEEWAY;
+		var min_x = previous_floor.left + EDGE_LEEWAY;
 		
 		if (direction > 0) {
 			max_x = Math.min(max_x, stage_limits.right - max_jump_width - min_width);
