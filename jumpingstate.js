@@ -62,6 +62,7 @@ function(makeParabola, floorGen, settings) {
 			
 			if (death.y > bloke.y()) {
 				switchToDeathState();
+				return;
 			}
 			
 			floor_generator.generateFloorsUpTo(maxVisibleY());

@@ -32,24 +32,35 @@ function (graphics, makeJumpState, makeBloke, settings) {
 	
 	var state = null;
 	
-	function switchToDeathState() {
-		state.unload();
-		
-		state = {
-			update: function() {
-				
+	function switchState(new_state) {
+		if (state) { state.unload(); }
+		state = new_state;
+		state.start();		
+	}
+	
+	function createDeathState() {
+		return {
+			start: function() { 
+				the_floors.length = 0; 
+			},
+			update: function(seconds_elapsed) {
+				bloke.update(seconds_elapsed * 0.05);
 			}
 		};
 	}
 	
-	function switchToJumpingState() {
-		var maxVisibleY = function() { return graphics.size.height() + viewport_y(); };
-		state = makeJumpState(bloke, death, the_floors, stage_limits, switchToDeathState, maxVisibleY);
-		state.start();
+	function createJumpingState() {
+		var maxVisibleY = function() { 
+			return graphics.size.height() + viewport_y(); 
+		};
+		var switchToDeathState = function() { 
+			switchState(createDeathState()); 
+		};
+		return makeJumpState(bloke, death, the_floors, stage_limits, switchToDeathState, maxVisibleY);
 	}
 	
 	function init() {
-		switchToJumpingState();
+		switchState(createJumpingState());
 	}
 	
 	function start() {
