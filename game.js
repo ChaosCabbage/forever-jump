@@ -1,6 +1,6 @@
 
-requirejs(['draw', 'jumpingstate', 'bloke', 'settings'],
-function (graphics, makeJumpState, makeBloke, settings) {
+requirejs(['draw', 'jumpingstate', 'deathstate', 'bloke', 'settings'],
+function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 	
 	var stage_limits = {
 		left: 20,
@@ -39,14 +39,8 @@ function (graphics, makeJumpState, makeBloke, settings) {
 	}
 	
 	function createDeathState() {
-		return {
-			start: function() { 
-				the_floors.length = 0; 
-			},
-			update: function(seconds_elapsed) {
-				bloke.update(seconds_elapsed * 0.05);
-			}
-		};
+		var switchToJumpingState = function() { switchState(createJumpingState()); };
+		return makeDeathState(the_floors, death, bloke, switchToJumpingState);
 	}
 	
 	function createJumpingState() {
