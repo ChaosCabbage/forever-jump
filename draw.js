@@ -71,11 +71,20 @@ define(function() {
 		the_canvas_context.fillStyle = "red";
 		the_canvas_context.fillText(Math.floor(height).toString(),20,30);
 	}
+	
+	function drawDeathLine(height, viewport_bottom_y) {
+		var floorThickness = 2;
+		
+		var y = yFromGameY(height, viewport_bottom_y);
+		the_canvas_context.fillStyle = "red";
+		the_canvas_context.fillRect(0,y,w(),floorThickness);
+	}
 
 	return {
 		size: {width: w, height: h },
 		wipe: wipe,
 		drawWalls: drawWalls,
+		drawDeathLine: drawDeathLine,
 		drawParabola: drawParabola,
 		drawFloor: drawFloor,
 		drawBloke: drawBloke,

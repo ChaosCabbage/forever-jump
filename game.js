@@ -1,6 +1,6 @@
 
-requirejs(['parabola', 'draw', 'floorgeneration', 'bloke'],
-function (makeParabola, graphics, floorGen, makeBloke) {
+requirejs(['draw', 'jumpingstate', 'bloke', 'settings'],
+function (graphics, makeJumpState, makeBloke, settings) {
 	
 	var stage_limits = {
 		left: 20,
@@ -9,20 +9,12 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 	
 	var the_floors = 
 		[	{ left:0, right:graphics.size.width(), y:30 }	];
-		
-	var settings = {
-		x_speed: 250,
-		jump_speed: 700,
-		gravity: 2000
-	};	
 	
 	var bloke = makeBloke(settings, the_floors, stage_limits);
-		
-	function createJumpParabola(start_position, direction) {
-		return makeParabola(start_position, 
-		                    {x: settings.x_speed * direction, y: settings.jump_speed}, 
-							settings.gravity);
-	}
+	
+	var death = {
+		y: 0
+	};
 
 	function viewport_y() {
 		return Math.max(0, bloke.y() - 200);
@@ -34,82 +26,42 @@ function (makeParabola, graphics, floorGen, makeBloke) {
 		graphics.drawWalls();
 		graphics.drawBloke(bloke, view);		
 		the_floors.forEach(function(floor){ graphics.drawFloor(floor, view); });
+		graphics.drawDeathLine(death.y, view);
 		graphics.drawHeight(bloke.y());
 	}
 	
-	function makeFloorGenerator(floors) {
+	var state = null;
 	
-		function generateNewFloor(previous_floor, direction) {
-			var allowed_widths = {lower: 40, upper: 110};
-			var new_floor = floorGen(
-				previous_floor, 
-				createJumpParabola({ x: 0, y: 0 }, direction), 
-				direction, 
-				stage_limits, 
-				allowed_widths
-			);
-			
-			return new_floor.floor;
-		};
+	function switchToDeathState() {
+		state.unload();
 		
-		var floor_generation_direction = 1;
-		
-		function generateFloorsUpTo(final_y) {
-			
-			var latest_floor = floors[floors.length-1];
-			if (latest_floor.y > final_y) { return; }		
-			
-			var floor = generateNewFloor(latest_floor, floor_generation_direction);
-			floors.push(floor);
+		state = {
+			update: function() {
 				
-			if ((floor.right == stage_limits.right) || (floor.left == stage_limits.left)) {
-				floor_generation_direction *= -1;
-			}		
-			
-			generateFloorsUpTo(final_y);
+			}
 		};
-		
-		return {
-			generateFloorsUpTo: generateFloorsUpTo
-		};
-	};
+	}
 	
-
+	function switchToJumpingState() {
+		var maxVisibleY = function() { return graphics.size.height() + viewport_y(); };
+		state = makeJumpState(bloke, death, the_floors, stage_limits, switchToDeathState, maxVisibleY);
+		state.start();
+	}
+	
+	function init() {
+		switchToJumpingState();
+	}
+	
 	function start() {
-		
-		var floorGenerator = makeFloorGenerator(the_floors);
-		floorGenerator.generateFloorsUpTo(graphics.size.height());
-		
-		function preventEvent(evt) {
-			evt.preventDefault();
-			evt.stopPropagation();
-			return false;
-		};		
-		
-		window.addEventListener("keydown", function(evt) {
-			if (evt.keyCode == 32) { 
-				bloke.jump();
-				return preventEvent(evt);
-			}			
-		}, false);
-		
-		window.addEventListener("touchstart", function(evt) {
-			bloke.jump();
-			return preventEvent(evt);
-		}, false);
-		window.addEventListener("click", preventEvent, false);
-		window.addEventListener("touchend", preventEvent, false);
-		window.addEventListener("touchmove", preventEvent, false);
-		window.addEventListener("scroll", preventEvent, false);
+		init();		
 		
 		var previous_time = null;
 		function step(timestamp) {
 			if (!previous_time) { previous_time = timestamp; }
 			var seconds_elapsed = (timestamp - previous_time) / 1000;
 			
-			bloke.update(seconds_elapsed);
+			state.update(seconds_elapsed);
 			draw();
-			floorGenerator.generateFloorsUpTo(graphics.size.height() + viewport_y());
 			
 			previous_time = timestamp;
 			window.requestAnimationFrame(step);
