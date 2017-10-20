@@ -33,7 +33,7 @@ define(["./random"], function(random) {
 		return Math.abs(first_point.x - origin.x);
 	}
 	
-	var EDGE_LEEWAY = 12; // probably needs to be more clever
+	var EDGE_LEEWAY = 15; // probably needs to be more clever
 	
 	function safeStartLimits(previous_floor, max_jump_width, stage_limits, min_width, direction) {
 		

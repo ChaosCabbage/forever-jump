@@ -1,6 +1,6 @@
 define(function() {
 
-	return function createDeathState(the_floors, death, bloke, switchToJumpingState) {		
+	return function createDeathState(start_height, the_floors, death, bloke, switchToJumpingState) {		
 	
 		var death_speed;
 		
@@ -15,6 +15,7 @@ define(function() {
 			death_speed += 10 * seconds_elapsed;
 			
 			if (death.y < 0) {
+				death.y = start_height;
 				switchToJumpingState();
 			}
 		};
@@ -26,7 +27,7 @@ define(function() {
   		return {
 			start: start,
 			update: update,
-			unload: unload
+			unload: unload,
 		};
 	};
 });

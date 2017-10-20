@@ -69,6 +69,12 @@ define(function() {
 	function drawHeight(height) {
 		the_canvas_context.font = "30px Arial";
 		the_canvas_context.fillStyle = "red";
+		the_canvas_context.fillText(Math.floor(height).toString(),28,50);
+	}
+
+	function drawMaxScore(height) {
+		the_canvas_context.font = "38px Arial";
+		the_canvas_context.fillStyle = "blue";
 		the_canvas_context.fillText(Math.floor(height).toString(),20,30);
 	}
 	
@@ -88,6 +94,7 @@ define(function() {
 		drawParabola: drawParabola,
 		drawFloor: drawFloor,
 		drawBloke: drawBloke,
-		drawHeight: drawHeight
+		drawHeight: drawHeight,
+		drawMaxScore: drawMaxScore
 	};
 });
