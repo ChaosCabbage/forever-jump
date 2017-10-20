@@ -7,16 +7,15 @@ function(makeParabola, floorGen, settings) {
 							settings.gravity);
 	}
 	
-	function makeFloorGenerator(floors, stage_limits) {
+	function makeFloorGenerator(settings, floors, stage_limits) {
 	
 		function generateNewFloor(previous_floor, direction) {
-			var allowed_widths = {lower: 40, upper: 110};
 			var new_floor = floorGen(
+				settings, 
 				previous_floor, 
 				createJumpParabola({ x: 0, y: 0 }, direction), 
 				direction, 
-				stage_limits, 
-				allowed_widths
+				stage_limits
 			);
 			
 			return new_floor.floor;
@@ -45,6 +44,7 @@ function(makeParabola, floorGen, settings) {
 	};
 	
 	return function createState(
+		settings,
 		bloke, 
 		death, 
 		the_floors, 
@@ -53,8 +53,8 @@ function(makeParabola, floorGen, settings) {
 		maxVisibleY
 	) {		
 	
-		var floor_generator = makeFloorGenerator(the_floors, stage_limits);
-		var death_speed = 10; // pixels per second
+		var floor_generator = makeFloorGenerator(settings, the_floors, stage_limits);
+		var death_speed = settings.death_speed;
 		
 		function update(seconds_elapsed) {
 			bloke.update(seconds_elapsed);

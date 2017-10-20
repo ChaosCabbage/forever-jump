@@ -33,12 +33,12 @@ define(["./random"], function(random) {
 		return Math.abs(first_point.x - origin.x);
 	}
 	
-	var EDGE_LEEWAY = 15; // probably needs to be more clever
-	
-	function safeStartLimits(previous_floor, max_jump_width, stage_limits, min_width, direction) {
-		
-		var max_x = previous_floor.right - EDGE_LEEWAY;
-		var min_x = previous_floor.left + EDGE_LEEWAY;
+	function safeStartLimits(settings, previous_floor, max_jump_width, stage_limits, direction) {
+		var leeway = settings.edge_leeway;
+		var min_width = settings.allowed_floor_widths.lower;
+
+		var max_x = previous_floor.right - leeway;
+		var min_x = previous_floor.left + leeway;
 		
 		if (direction > 0) {
 			max_x = Math.min(max_x, stage_limits.right - max_jump_width - min_width);
@@ -55,9 +55,9 @@ define(["./random"], function(random) {
 		
 	}
 	
-	return function generateNewFloor(previous_floor, jump_parabola, direction, stage_limits, width_limits) {
+	return function generateNewFloor(settings, previous_floor, jump_parabola, direction, stage_limits) {
 		
-		var limits = safeStartLimits(previous_floor, maxJumpWidth(jump_parabola), stage_limits, width_limits.lower, direction);
+		var limits = safeStartLimits(settings, previous_floor, maxJumpWidth(jump_parabola), stage_limits, direction);
 		var jump_x = generateBetween(limits.left, limits.right);		
 		
 		// Want to place the new floor somewhere in the range of the parabola,
@@ -74,6 +74,8 @@ define(["./random"], function(random) {
 			x: landingPoint.x - origin.x + jump_x,
 			y: landingPoint.y - origin.y + previous_floor.y
 		};
+
+		var width_limits = settings.allowed_floor_widths;
 		
 		var new_width = generateBetween(width_limits.lower, width_limits.upper);
 		

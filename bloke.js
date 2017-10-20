@@ -22,13 +22,13 @@ define(function() {
 		return null;
 	};
 	
-	return function makeBloke(start_height, jump_settings, floors, stage_limits) {
+	return function makeBloke(jump_settings, floors, stage_limits) {
 		var man_halfwidth = 5;
 		
 		var _current_direction = 1;		
 				
 		var _x = (stage_limits.right + stage_limits.left) / 2;
-		var _y = start_height;
+		var _y = jump_settings.first_floor_y;
 		
 		var _y_velocity = 0;
 		

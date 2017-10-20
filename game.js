@@ -2,9 +2,6 @@
 requirejs(['draw', 'jumpingstate', 'deathstate', 'bloke', 'settings'],
 function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 	
-	var first_floor_y = 40;
-	var death_start_y = -30;
-	
 	var stage_limits = {
 		left: 20,
 		right: graphics.size.width() - 20
@@ -12,14 +9,13 @@ function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 
 	var max_score = 0;
 	
-	
 	var the_floors = 
-		[	{ left:0, right:graphics.size.width(), y: first_floor_y }	];
+		[	{ left:0, right:graphics.size.width(), y: settings.first_floor_y }	];
 	
-	var bloke = makeBloke(first_floor_y, settings, the_floors, stage_limits);
+	var bloke = makeBloke(settings, the_floors, stage_limits);
 	
 	var death = {
-		y: death_start_y
+		y: settings.death_start_y
 	};
 
 	function viewport_y() {
@@ -27,7 +23,7 @@ function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 	}
 
 	function currentScore() {
-		return bloke.y() - first_floor_y;
+		return bloke.y() - settings.first_floor_y;
 	}
 	
 	function draw() {	
@@ -51,7 +47,7 @@ function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 	
 	function createDeathState() {
 		var switchToJumpingState = function() { switchState(createJumpingState()); };
-		return makeDeathState(death_start_y, the_floors, death, bloke, switchToJumpingState);
+		return makeDeathState(settings, the_floors, death, bloke, switchToJumpingState);
 	}
 	
 	function createJumpingState() {
@@ -61,7 +57,7 @@ function (graphics, makeJumpState, makeDeathState, makeBloke, settings) {
 		var switchToDeathState = function() { 
 			switchState(createDeathState()); 
 		};
-		return makeJumpState(bloke, death, the_floors, stage_limits, switchToDeathState, maxVisibleY);
+		return makeJumpState(settings, bloke, death, the_floors, stage_limits, switchToDeathState, maxVisibleY);
 	}
 	
 	function init() {
