@@ -24,9 +24,9 @@ define(function() {
 		the_canvas_context.fillRect(w()-20,0,w(),h());
 	}
 	
-	function drawBloke(bloke, viewport_bottom_y) {
+	function drawBloke(bloke, viewport_bottom_y, colour = "black") {
 		var y = yFromGameY(bloke.y(), viewport_bottom_y);
-		the_canvas_context.fillStyle = "black";
+		the_canvas_context.fillStyle = colour;
 		
 		the_canvas_context.beginPath();
 		the_canvas_context.moveTo(bloke.x() - 1, y     );

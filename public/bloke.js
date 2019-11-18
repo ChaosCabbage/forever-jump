@@ -31,6 +31,8 @@ define(function() {
 		var _y = jump_settings.first_floor_y;
 		
 		var _y_velocity = 0;
+
+		var _jump_start_x = undefined;
 		
 		var pos = function() {
 			return { x: _x, y: _y };
@@ -68,6 +70,7 @@ define(function() {
 			var collided_floor = jumpCollision({x: new_x, y: new_y});
 			if (collided_floor) {
 				_y_velocity = 0;
+				_jump_start_x = undefined;
 				new_y = collided_floor.y;
 			}
 			
@@ -79,18 +82,27 @@ define(function() {
 				_current_direction *= -1;
 			}
 		};
+
+		var rationalise = function(server_position) {
+			_x = server_position.x;
+			_y = server_position.y;
+			update((server_position.ping / 1000))
+		}
 		
 		var jump = function() {
 			if (onSolidGround()) {
 			  _y_velocity = jump_settings.jump_speed;		  
+			  _jump_start_x = _x;
 			}
 		}
 		
 		return {
 			x: function() { return _x; },
 			y: function() { return _y; },
+			jumpStartX() { return _jump_start_x; },
 			update: update,
-			jump: jump
+			jump: jump,
+			rationalise: rationalise
 		};	
 	};
 });
