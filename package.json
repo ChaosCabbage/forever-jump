@@ -1,0 +1,24 @@
+{
+  "name": "forever-jump",
+  "version": "1.0.0",
+  "description": "A jumping infinite scroller game/torture",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ChaosCabbage/forever-jump.git"
+  },
+  "author": "Paul Courts",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ChaosCabbage/forever-jump/issues"
+  },
+  "homepage": "https://github.com/ChaosCabbage/forever-jump#readme",
+  "dependencies": {
+    "express": "^4.17.1",
+    "socket.io": "^2.3.0"
+  }
+}
