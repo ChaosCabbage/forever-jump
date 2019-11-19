@@ -1,6 +1,7 @@
 requirejs(
     [
         "draw",
+        "waitingstate",
         "jumpingstate",
         "deathstate",
         "bloke",
@@ -12,6 +13,7 @@ requirejs(
     ],
     function(
         graphics,
+        makeWaitingState,
         makeJumpState,
         makeDeathState,
         makeBloke,
@@ -21,7 +23,7 @@ requirejs(
         makePingTracker,
         parseQuery
     ) {
-        var random_seed = 123;
+        var random_seed = undefined;
 
         var query_pars = parseQuery();
         var your_name = query_pars.name || "Nop";
@@ -75,6 +77,8 @@ requirejs(
             return bloke.y() - settings.first_floor_y;
         }
 
+        var state = undefined;
+
         function draw() {
             var view = viewport_y();
             graphics.wipe("AntiqueWhite");
@@ -90,8 +94,6 @@ requirejs(
             graphics.drawMaxScore(max_score);
             graphics.drawHeight(currentScore());
         }
-
-        var state = null;
 
         function switchState(new_state) {
             if (state) {
@@ -133,8 +135,19 @@ requirejs(
             );
         }
 
+        function createWaitingState() {
+            return makeWaitingState(bloke, the_floors, death);
+        }
+
         function init() {
-            switchState(createJumpingState());
+            switchState(createWaitingState());
+            socket.on("begin", function(gameSettings) {
+                random_seed = gameSettings.seed;
+                switchState(createJumpingState());
+            });
+            socket.on("stop", function() {
+                switchState(createWaitingState());
+            });
         }
 
         function update(seconds_elapsed) {

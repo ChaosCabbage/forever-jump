@@ -4,14 +4,35 @@
     <script src="/socket.io/socket.io.js"></script>
     <script>
         var socket = io()
+        var adminSocket = io("/admin")
+
         socket.on("gamestate", function (gamestate) {
             console.log(JSON.stringify(gamestate))
+            const n = Object.keys(gamestate.players).length;
+            var board = document.getElementById("leaderboard");
+
+            if (gamestate.state === "WAITING") {
+                document.getElementById("go").disabled = false;
+                board.innerHTML = n + " players waiting."
+            } else {
+                board.innerHTML = n + "players."
+                document.getElementById("go").disabled = true;
+            }
         })
+
+        function beginGame() {
+            adminSocket.emit("begin")
+        }
+        function endGame() {
+            adminSocket.emit("stop")
+        }
     </script>
 </head>
 
 <body>
-    <div id="leaderboard"></div>
+    <div id="leaderboard">0 players waiting</div>
+    <button id="go" onclick="beginGame()">Go</button>
+    <button id="end" onclick="endGame()">Stop</button>
 </body>
 
 </html>

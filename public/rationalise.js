@@ -27,9 +27,10 @@ define(function() {
         }
 
         socket.on("gamestate", function(gamestate) {
-            delete gamestate[socket.id]; // Delete me from the list
+            var players = gamestate.players;
             console.log("gamestate = " + JSON.stringify(gamestate));
-            rationalise(gamestate);
+            delete players[socket.id]; // Delete me from the list
+            rationalise(players);
         });
     };
 });

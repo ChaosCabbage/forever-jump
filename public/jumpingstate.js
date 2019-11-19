@@ -1,9 +1,10 @@
-define(["parabola", "floorgeneration", "settings", "random"], function(
-    makeParabola,
-    floorGen,
-    settings,
-    makeGenerator
-) {
+define([
+    "parabola",
+    "floorgeneration",
+    "settings",
+    "random",
+    "jumpingevents"
+], function(makeParabola, floorGen, settings, makeGenerator, makeJumpControl) {
     function createJumpParabola(start_position, direction) {
         return makeParabola(
             start_position,
@@ -75,6 +76,8 @@ define(["parabola", "floorgeneration", "settings", "random"], function(
         );
         var death_speed = settings.death_speed;
 
+        var jumpController = makeJumpControl(bloke);
+
         function update(seconds_elapsed) {
             bloke.update(seconds_elapsed);
             death.y += death_speed * seconds_elapsed;
@@ -87,43 +90,13 @@ define(["parabola", "floorgeneration", "settings", "random"], function(
             floor_generator.generateFloorsUpTo(maxVisibleY());
         }
 
-        function preventEvent(evt) {
-            evt.preventDefault();
-            evt.stopPropagation();
-            return false;
-        }
-
-        function doJump(evt) {
-            bloke.jump();
-            return preventEvent(evt);
-        }
-
-        function doJumpOnSpace(evt) {
-            if (evt.keyCode == 32) {
-                doJump(evt);
-            }
-        }
-
         function start() {
             floor_generator.generateFloorsUpTo(maxVisibleY());
-
-            window.addEventListener("keydown", doJumpOnSpace, false);
-            window.addEventListener("touchstart", doJump, false);
-
-            window.addEventListener("click", preventEvent, false);
-            window.addEventListener("touchend", preventEvent, false);
-            window.addEventListener("touchmove", preventEvent, false);
-            window.addEventListener("scroll", preventEvent, false);
+            jumpController.enableJumping();
         }
 
         function unload() {
-            window.removeEventListener("keydown", doJumpOnSpace);
-            window.removeEventListener("touchstart", doJump);
-
-            window.removeEventListener("click", preventEvent);
-            window.removeEventListener("touchend", preventEvent);
-            window.removeEventListener("touchmove", preventEvent);
-            window.removeEventListener("scroll", preventEvent);
+            jumpController.disableJumping();
         }
 
         return {
