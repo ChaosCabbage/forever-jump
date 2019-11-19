@@ -23,6 +23,7 @@ requirejs(
     ) {
         var query_pars = parseQuery();
         var your_name = query_pars.name || "Nop";
+        your_name = decodeURIComponent(your_name).replace("+", " ");
 
         var socket = io();
 

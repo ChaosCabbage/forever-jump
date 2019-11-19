@@ -1,0 +1,17 @@
+<html>
+
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        var socket = io()
+        socket.on("gamestate", function (gamestate) {
+            console.log(JSON.stringify(gamestate))
+        })
+    </script>
+</head>
+
+<body>
+    <div id="leaderboard"></div>
+</body>
+
+</html>
