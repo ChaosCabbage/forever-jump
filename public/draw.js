@@ -50,16 +50,6 @@ define(function() {
 
         the_canvas_context.font = "36px cursive";
         the_canvas_context.textAlign = "center";
-        // var nameSize = the_canvas_context.measureText(bloke.name());
-        // var nameWidth = nameSize.width;
-
-        // the_canvas_context.fillStyle = "dark grey";
-        // the_canvas_context.fillRect(
-        //     bloke.x() - nameWidth / 2 - 1,
-        //     y - 70,
-        //     nameWidth + 2,
-        //     30
-        // );
 
         the_canvas_context.fillStyle = "black";
         the_canvas_context.fillText(bloke.name(), bloke.x(), y - 50);
@@ -115,6 +105,26 @@ define(function() {
         the_canvas_context.fillText(Math.floor(height).toString(), 20, 30);
     }
 
+    function drawGiantBanner(textLines) {
+        // Divide the screen into chunks.
+        var approxLineHeight = 115;
+        var middle = h() / 2;
+        var total = approxLineHeight * textLines.length;
+        var top = middle - total / 2;
+
+        the_canvas_context.font = "96px serif";
+        the_canvas_context.textAlign = "center";
+        the_canvas_context.fillStyle = "dark red";
+
+        textLines.forEach(function(line, i) {
+            the_canvas_context.fillText(
+                line,
+                w() / 2,
+                top + i * approxLineHeight
+            );
+        });
+    }
+
     function drawDeathLine(height, viewport_bottom_y) {
         var floorThickness = 2;
 
@@ -133,6 +143,7 @@ define(function() {
         drawBloke: drawBloke,
         drawBlokeWithName: drawBlokeWithName,
         drawHeight: drawHeight,
-        drawMaxScore: drawMaxScore
+        drawMaxScore: drawMaxScore,
+        drawGiantBanner: drawGiantBanner
     };
 });

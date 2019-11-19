@@ -92,16 +92,20 @@ requirejs(
             var view = viewport_y();
             graphics.wipe("AntiqueWhite");
             graphics.drawWalls();
-            graphics.drawBloke(bloke, view);
             forEachOtherBugger(function(other) {
                 graphics.drawBlokeWithName(other, view, "gray");
             });
+            graphics.drawBloke(bloke, view);
             the_floors.forEach(function(floor) {
                 graphics.drawFloor(floor, view);
             });
             graphics.drawDeathLine(death.y, view);
             graphics.drawMaxScore(max_score);
             graphics.drawHeight(currentScore());
+
+            if (state.draw) {
+                state.draw(graphics);
+            }
         }
 
         function switchState(new_state) {

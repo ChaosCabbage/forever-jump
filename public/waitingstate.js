@@ -17,10 +17,15 @@ define(["jumpingevents", "settings"], function(makeJumpControl, settings) {
             jumpController.disableJumping();
         }
 
+        function draw(graphics) {
+            graphics.drawGiantBanner(["Gathering", "Souls"]);
+        }
+
         return {
             start: start,
             update: update,
-            unload: unload
+            unload: unload,
+            draw: draw
         };
     };
 });
