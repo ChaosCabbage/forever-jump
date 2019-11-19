@@ -1,8 +1,9 @@
 define(["settings"], function(settings) {
-    return function makeBroadcaster(yourBloke, socket, pingTracker) {
+    return function makeBroadcaster(yourBloke, socket, pingTracker, scoreRef) {
         function emitPos() {
             var pos = yourBloke.serialize();
             pos.ping = pingTracker.lastPing();
+            pos.score = scoreRef.maxScore();
             socket.emit("position", pos);
         }
 

@@ -23,7 +23,7 @@ requirejs(
         makePingTracker,
         parseQuery
     ) {
-        var random_seed = undefined;
+        var session = undefined;
 
         var query_pars = parseQuery();
         var your_name = query_pars.name || "Nop";
@@ -40,6 +40,12 @@ requirejs(
 
         var max_score = 0;
 
+        var scoreRef = {
+            maxScore: function() {
+                return Math.floor(max_score);
+            }
+        };
+
         var the_floors = [
             { left: 0, right: graphics.size.width(), y: settings.first_floor_y }
         ];
@@ -50,7 +56,7 @@ requirejs(
 
         var bloke = makeBlokeWithCurrentSettings(your_name);
 
-        var broadcaster = makeBroadcaster(bloke, socket, pingTracker);
+        var broadcaster = makeBroadcaster(bloke, socket, pingTracker, scoreRef);
 
         var death = {
             y: settings.death_start_y
@@ -131,7 +137,8 @@ requirejs(
                 stage_limits,
                 switchToDeathState,
                 maxVisibleY,
-                random_seed
+                session.goal,
+                session.seed
             );
         }
 
@@ -142,10 +149,11 @@ requirejs(
         function init() {
             switchState(createWaitingState());
             socket.on("begin", function(gameSettings) {
-                random_seed = gameSettings.seed;
+                session = gameSettings;
                 switchState(createJumpingState());
             });
             socket.on("stop", function() {
+                max_score = 0;
                 switchState(createWaitingState());
             });
         }
@@ -169,7 +177,6 @@ requirejs(
                     previous_time = timestamp;
                 }
                 var ms_elapsed = timestamp - previous_time;
-                console.log("Step time: " + ms_elapsed + "ms");
                 var seconds_elapsed = ms_elapsed / 1000;
 
                 update(seconds_elapsed);

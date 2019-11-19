@@ -13,7 +13,13 @@ define([
         );
     }
 
-    function makeFloorGenerator(settings, floors, stage_limits, random_seed) {
+    function makeFloorGenerator(
+        settings,
+        floors,
+        stage_limits,
+        random_seed,
+        goal_y
+    ) {
         var generator = makeGenerator(random_seed);
 
         function generateNewFloor(previous_floor, direction) {
@@ -34,6 +40,16 @@ define([
         function generateFloorsUpTo(final_y) {
             var latest_floor = floors[floors.length - 1];
             if (latest_floor.y > final_y) {
+                return;
+            }
+
+            if (latest_floor.y > goal_y) {
+                floors.pop();
+                floors.push({
+                    left: stage_limits.left,
+                    right: stage_limits.right,
+                    y: goal_y
+                });
                 return;
             }
 
@@ -66,13 +82,15 @@ define([
         stage_limits,
         switchToDeathState,
         maxVisibleY,
+        goal_y,
         random_seed
     ) {
         var floor_generator = makeFloorGenerator(
             settings,
             the_floors,
             stage_limits,
-            random_seed
+            random_seed,
+            goal_y
         );
         var death_speed = settings.death_speed;
 

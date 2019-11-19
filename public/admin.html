@@ -17,11 +17,13 @@
             } else {
                 board.innerHTML = n + "players."
                 document.getElementById("go").disabled = true;
+                board.append("winners: " + JSON.stringify(gamestate.winners))
             }
         })
 
         function beginGame() {
-            adminSocket.emit("begin")
+            var goal = parseInt(document.getElementById("goal").value);
+            adminSocket.emit("begin", { goal: goal })
         }
         function endGame() {
             adminSocket.emit("stop")
@@ -31,6 +33,7 @@
 
 <body>
     <div id="leaderboard">0 players waiting</div>
+    <input type="number" id="goal" value="5000" />
     <button id="go" onclick="beginGame()">Go</button>
     <button id="end" onclick="endGame()">Stop</button>
 </body>
