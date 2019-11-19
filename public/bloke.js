@@ -23,7 +23,12 @@ define(function() {
         return null;
     }
 
-    return function makeBloke(jump_settings, floors, stage_limits) {
+    return function makeBloke(
+        jump_settings,
+        floors,
+        stage_limits,
+        name = "Monmouth"
+    ) {
         var man_halfwidth = 5;
 
         var _current_direction = 1;
@@ -32,6 +37,8 @@ define(function() {
         var _y = jump_settings.first_floor_y;
 
         var _y_velocity = 0;
+
+        var _name = name;
 
         var pos = function() {
             return { x: _x, y: _y };
@@ -90,6 +97,7 @@ define(function() {
             _y = server_position.y;
             _current_direction = server_position.d;
             _y_velocity = server_position.vy;
+            _name = server_position.name;
             update((server_position.age + my_ping) / 1000);
         };
 
@@ -104,7 +112,8 @@ define(function() {
                 x: _x,
                 y: _y,
                 d: _current_direction,
-                vy: _y_velocity
+                vy: _y_velocity,
+                name: _name
             };
         };
 
@@ -114,6 +123,9 @@ define(function() {
             },
             y: function() {
                 return _y;
+            },
+            name: function() {
+                return _name;
             },
             update: update,
             jump: jump,

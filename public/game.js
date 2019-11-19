@@ -7,7 +7,8 @@ requirejs(
         "settings",
         "broadcaster",
         "rationalise",
-        "pingTracker"
+        "pingTracker",
+        "querystring"
     ],
     function(
         graphics,
@@ -17,8 +18,12 @@ requirejs(
         settings,
         makeBroadcaster,
         startServerRationaliser,
-        makePingTracker
+        makePingTracker,
+        parseQuery
     ) {
+        var query_pars = parseQuery();
+        var your_name = query_pars.name || "Nop";
+
         var socket = io();
 
         var pingTracker = makePingTracker(socket);
@@ -34,11 +39,11 @@ requirejs(
             { left: 0, right: graphics.size.width(), y: settings.first_floor_y }
         ];
 
-        var makeBlokeWithCurrentSettings = function() {
-            return makeBloke(settings, the_floors, stage_limits);
+        var makeBlokeWithCurrentSettings = function(name) {
+            return makeBloke(settings, the_floors, stage_limits, name);
         };
 
-        var bloke = makeBlokeWithCurrentSettings();
+        var bloke = makeBlokeWithCurrentSettings(your_name);
 
         var broadcaster = makeBroadcaster(bloke, socket, pingTracker);
 
@@ -73,7 +78,7 @@ requirejs(
             graphics.drawWalls();
             graphics.drawBloke(bloke, view);
             forEachOtherBugger(function(other) {
-                graphics.drawBloke(other, view, "gray");
+                graphics.drawBlokeWithName(other, view, "gray");
             });
             the_floors.forEach(function(floor) {
                 graphics.drawFloor(floor, view);
