@@ -1,22 +1,10 @@
-define(['settings'],
-function(settings) {
-    return function makeBroadcaster(yourBloke, socket) {
-
-        var last_ping = 0;
-        
-        socket.on("pong", function(ms) {
-            console.log("ping: " + ms + "ms")
-            last_ping = ms;
-        })
-
+define(["settings"], function(settings) {
+    return function makeBroadcaster(yourBloke, socket, pingTracker) {
         function emitPos() {
-            socket.emit("position", {
-                x: yourBloke.x(),
-                y: yourBloke.y(),
-                jumpStartX: yourBloke.jumpStartX(),
-                ping: last_ping
-            });
-        };
+            var pos = yourBloke.serialize();
+            pos.ping = pingTracker.lastPing();
+            socket.emit("position", pos);
+        }
 
         var time = 0;
         return {
@@ -27,6 +15,6 @@ function(settings) {
                     time -= settings.ping_frequency;
                 }
             }
-        }
-    }
+        };
+    };
 });
