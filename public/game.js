@@ -21,6 +21,8 @@ requirejs(
         makePingTracker,
         parseQuery
     ) {
+        var random_seed = 123;
+
         var query_pars = parseQuery();
         var your_name = query_pars.name || "Nop";
         your_name = decodeURIComponent(your_name).replace("+", " ");
@@ -126,7 +128,8 @@ requirejs(
                 the_floors,
                 stage_limits,
                 switchToDeathState,
-                maxVisibleY
+                maxVisibleY,
+                random_seed
             );
         }
 
@@ -152,7 +155,9 @@ requirejs(
                 if (!previous_time) {
                     previous_time = timestamp;
                 }
-                var seconds_elapsed = (timestamp - previous_time) / 1000;
+                var ms_elapsed = timestamp - previous_time;
+                console.log("Step time: " + ms_elapsed + "ms");
+                var seconds_elapsed = ms_elapsed / 1000;
 
                 update(seconds_elapsed);
 

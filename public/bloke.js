@@ -23,14 +23,15 @@ define(function() {
         return null;
     }
 
+    var MAN_HALFWIDTH = 5;
+    var MAX_SINGLE_UPDATE_S = 20 / 1000;
+
     return function makeBloke(
         jump_settings,
         floors,
         stage_limits,
         name = "Monmouth"
     ) {
-        var man_halfwidth = 5;
-
         var _current_direction = 1;
 
         var _x = (stage_limits.right + stage_limits.left) / 2;
@@ -46,14 +47,14 @@ define(function() {
 
         var touchingWall = function(x) {
             return (
-                x <= stage_limits.left + man_halfwidth ||
-                x >= stage_limits.right - man_halfwidth
+                x <= stage_limits.left + MAN_HALFWIDTH ||
+                x >= stage_limits.right - MAN_HALFWIDTH
             );
         };
 
         var collideWithWall = function(x) {
-            var new_x = Math.max(x, stage_limits.left + man_halfwidth);
-            new_x = Math.min(new_x, stage_limits.right - man_halfwidth);
+            var new_x = Math.max(x, stage_limits.left + MAN_HALFWIDTH);
+            new_x = Math.min(new_x, stage_limits.right - MAN_HALFWIDTH);
             return new_x;
         };
 
@@ -69,7 +70,7 @@ define(function() {
             return jumpCollision(test_pos) != null;
         };
 
-        var update = function(seconds_elapsed) {
+        var singleUpdate = function(seconds_elapsed) {
             _y_velocity -= seconds_elapsed * jump_settings.gravity;
 
             var new_x =
@@ -92,13 +93,23 @@ define(function() {
             }
         };
 
-        var rationalise = function(server_position, my_ping) {
-            _x = server_position.x;
-            _y = server_position.y;
-            _current_direction = server_position.d;
-            _y_velocity = server_position.vy;
-            _name = server_position.name;
-            update((server_position.age + my_ping) / 1000);
+        var update = function(seconds_elapsed) {
+            while (seconds_elapsed > MAX_SINGLE_UPDATE_S) {
+                singleUpdate(MAX_SINGLE_UPDATE_S);
+                seconds_elapsed -= MAX_SINGLE_UPDATE_S;
+            }
+            singleUpdate(seconds_elapsed);
+        };
+
+        var rationalise = function(server_dude, my_ping) {
+            _x = server_dude.x;
+            _y = server_dude.y;
+            _current_direction = server_dude.d;
+            _y_velocity = server_dude.vy;
+            _name = server_dude.name;
+            var lag_time_ms = server_dude.age + my_ping;
+            console.log(_name + " resolving " + lag_time_ms + "ms lag");
+            update(lag_time_ms / 1000);
         };
 
         var jump = function() {
