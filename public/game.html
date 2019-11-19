@@ -1,38 +1,44 @@
 <html>
-	<head>
-		<script src="/socket.io/socket.io.js"></script>
-		<style>
-			#outer {
-				width: 100%;
-				height:100%;
-				display: flex;
-				align-items: center; 
-				justify-content: center; 
-			}
-			#game {
-				height: 100%;
-				width: 500;
-			}
-			#explanation {
-				font-family: sans-serif;
-				margin-left: 20;
-			}
-			.side {
-				flex: 1;
-			}
-		</style>
-	</head>
-	<body>
-		<div id="outer">
-			<div id="explanation" class="side">
-				<p>In life, you murdered a rival<br/>to win an olympic gold<br/>in high jump.</p> 
-				<p>This is your punishment.</p> 
-			</div>
-			<canvas id="game"></canvas>
-			<div class="side">
-			</div>
-		</div>
-	
-	<script data-main="game" src="require.js"></script>
-	</body>
+
+<head>
+    <script src="/socket.io/socket.io.js"></script>
+    <style>
+        #outer {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #game {
+            height: 100%;
+            width: 500;
+        }
+
+        #explanation {
+            font-family: sans-serif;
+            margin-left: 20;
+        }
+
+        .side {
+            flex: 1;
+        }
+    </style>
+</head>
+
+<body>
+    <div id="outer">
+        <div id="explanation" class="side">
+            <p>In life, you murdered a rival<br />to win an olympic gold<br />in high jump.</p>
+            <p>This is your punishment.</p>
+        </div>
+        <canvas id="game"></canvas>
+        <div class="side" id="leaderboard">
+        </div>
+    </div>
+
+    <script data-main="game" src="require.js"></script>
+</body>
+
 </html>

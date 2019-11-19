@@ -18,8 +18,7 @@ const currentGame = {
     state: states.waiting,
     players: {},
     randomSeed: Math.floor(Math.random() * 500),
-    //goal: 5000 + 40,
-    goal: 100 + 40,
+    goal: 5000,
     winners: []
 };
 
@@ -63,10 +62,12 @@ function consumableGameState() {
 }
 
 function checkForWinners() {
-    for (const id of Object.keys(currentGame.players)) {
-        if (currentGame.players[id].score > currentGame.goal) {
-            if (!currentGame.winners.includes(id)) {
-                currentGame.winners.push(id);
+    if (currentGame.state === states.jumping) {
+        for (const id of Object.keys(currentGame.players)) {
+            if (currentGame.players[id].score > currentGame.goal) {
+                if (!currentGame.winners.includes(id)) {
+                    currentGame.winners.push(id);
+                }
             }
         }
     }
@@ -82,7 +83,7 @@ admin.on("connection", socket => {
     socket.on("begin", settings => {
         currentGame.randomSeed = Math.floor(Math.random() * 500);
         currentGame.state = states.jumping;
-        currentGame.goal = settings.goal + 40;
+        currentGame.goal = settings.goal;
         console.log(`Goal = ${currentGame.goal}`);
         io.to("current game").emit("begin", {
             seed: currentGame.randomSeed,

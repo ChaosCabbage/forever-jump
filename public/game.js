@@ -9,7 +9,8 @@ requirejs(
         "broadcaster",
         "rationalise",
         "pingTracker",
-        "querystring"
+        "querystring",
+        "leaderboarder"
     ],
     function(
         graphics,
@@ -21,7 +22,8 @@ requirejs(
         makeBroadcaster,
         startServerRationaliser,
         makePingTracker,
-        parseQuery
+        parseQuery,
+        makeLeaderboarder
     ) {
         var session = undefined;
 
@@ -32,6 +34,7 @@ requirejs(
         var socket = io();
 
         var pingTracker = makePingTracker(socket);
+        makeLeaderboarder(socket);
 
         var stage_limits = {
             left: 20,
