@@ -66,7 +66,7 @@ requirejs(
         };
 
         var otherBuggers = {};
-        startServerRationaliser(
+        var applyUpdatesFromServer = startServerRationaliser(
             otherBuggers,
             socket,
             makeBlokeWithCurrentSettings,
@@ -187,6 +187,7 @@ requirejs(
         }
 
         function update(seconds_elapsed) {
+            applyUpdatesFromServer();
             state.update(seconds_elapsed);
             forEachOtherBugger(function(other) {
                 other.update(seconds_elapsed);

@@ -5,13 +5,13 @@ define(function() {
         makeBloke,
         pingTracker
     ) {
-        function rationalise(serverGameState) {
+        function rationalise(players) {
             var my_ping = pingTracker.lastPing();
 
             for (var buggerId of Object.keys(otherBuggers)) {
-                if (buggerId in serverGameState) {
+                if (buggerId in players) {
                     otherBuggers[buggerId].rationalise(
-                        serverGameState[buggerId],
+                        players[buggerId],
                         my_ping
                     );
                 } else {
@@ -19,18 +19,26 @@ define(function() {
                 }
             }
 
-            for (var newBugger of Object.keys(serverGameState)) {
+            for (var newBugger of Object.keys(players)) {
                 if (!(newBugger in otherBuggers)) {
-                    otherBuggers[newBugger] = makeBloke(serverGameState[newBugger].name);
+                    otherBuggers[newBugger] = makeBloke(players[newBugger].name);
                 }
             }
         }
 
+        var players = undefined;
+
         socket.on("gamestate", function(gamestate) {
-            var players = gamestate.players;
+            players = gamestate.players;
             console.log("gamestate = " + JSON.stringify(gamestate));
             delete players[socket.id]; // Delete me from the list
-            rationalise(players);
         });
+
+        return function update() {
+            if (players) {
+                rationalise(players);
+            }
+            players = undefined;            
+        }
     };
 });
