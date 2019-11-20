@@ -101,6 +101,13 @@ define(function() {
         the_canvas_context.fillText(Math.floor(height).toString(), 28, 50);
     }
 
+    function drawHeightPercentage(height) {
+        the_canvas_context.font = "30px Montserrat, sans-serif";
+        the_canvas_context.textAlign = "start";
+        the_canvas_context.fillStyle = "red";
+        the_canvas_context.fillText(Math.floor(height).toString() + "%", 28, 50);
+    }
+
     function drawMaxScore(height) {
         the_canvas_context.font = "38px Montserrat, sans-serif";
         the_canvas_context.textAlign = "start";
@@ -108,8 +115,14 @@ define(function() {
         the_canvas_context.fillText(Math.floor(height).toString(), 20, 30);
     }
 
+    function drawMaxPercentage(height) {
+        the_canvas_context.font = "38px Montserrat, sans-serif";
+        the_canvas_context.textAlign = "start";
+        the_canvas_context.fillStyle = "blue";
+        the_canvas_context.fillText(Math.floor(height).toString() + "%", 20, 30);
+    }
+
     function drawGiantBanner(textLines) {
-        // Divide the screen into chunks.
         var approxLineHeight = 115;
         var middle = h() / 2;
         var total = approxLineHeight * textLines.length;
@@ -117,7 +130,7 @@ define(function() {
 
         the_canvas_context.font = "italic 96px Sacramento, serif";
         the_canvas_context.textAlign = "center";
-        the_canvas_context.fillStyle = "dark red";
+        the_canvas_context.fillStyle = "red";
 
         textLines.forEach(function(line, i) {
             the_canvas_context.fillText(
@@ -146,7 +159,9 @@ define(function() {
         drawBloke: drawBloke,
         drawBlokeWithName: drawBlokeWithName,
         drawHeight: drawHeight,
+        drawHeight: drawHeightPercentage,
         drawMaxScore: drawMaxScore,
+        drawMaxPercentage: drawMaxPercentage,
         drawGiantBanner: drawGiantBanner
     };
 });

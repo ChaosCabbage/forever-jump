@@ -86,6 +86,19 @@ requirejs(
             return bloke.y() - settings.first_floor_y;
         }
 
+        function getCurrentPercentCompletion() {
+            if (session && session.goal) {
+                return (currentScore() / session.goal) * 100;
+            }
+            return undefined;
+        }
+        function getMaxPercentCompletion() {
+            if (session && session.goal) {
+                return (max_score / session.goal) * 100;
+            }
+            return undefined;
+        }
+
         var state = undefined;
 
         function draw() {
@@ -100,8 +113,16 @@ requirejs(
                 graphics.drawFloor(floor, view);
             });
             graphics.drawDeathLine(death.y, view);
-            graphics.drawMaxScore(max_score);
-            graphics.drawHeight(currentScore());
+            
+            var maxPercent = getMaxPercentCompletion();
+            if (maxPercent !== undefined) {
+                graphics.drawMaxPercentage(maxPercent);
+            }
+            
+            var percentage = getCurrentPercentCompletion();
+            if (percentage !== undefined) {
+                graphics.drawHeight(percentage);
+            }
 
             if (state.draw) {
                 state.draw(graphics);
@@ -144,8 +165,7 @@ requirejs(
                 stage_limits,
                 switchToDeathState,
                 maxVisibleY,
-                // 40 because the floors and the score are offset by 40 for some reason aagh
-                session.goal + 40, 
+                session.goal + settings.first_floor_y, 
                 session.seed
             );
         }
