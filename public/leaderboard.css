@@ -9,12 +9,14 @@
   }
   
   .won {
-    border-bottom: 0;;
+    border-bottom: 0;
+    border-top-left-radius: 10px;
   }
   
   .climbing {
     border-top: 0;
-    background-color: #e0e0d1;
+    background-color: #e29993;
+    border-bottom-right-radius: 10px;
   }
 
   .waiting {
