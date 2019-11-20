@@ -83,17 +83,16 @@ define([
         stage_limits,
         switchToDeathState,
         maxVisibleY,
-        goal_y,
-        random_seed
+        sessionSettings
     ) {
         var floor_generator = makeFloorGenerator(
             settings,
             the_floors,
             stage_limits,
-            random_seed,
-            goal_y
+            sessionSettings.seed,
+            sessionSettings.goal + settings.first_floor_y
         );
-        var death_speed = settings.death_speed;
+        var death_speed = sessionSettings.death ? settings.death_speed : 0;
 
         var jumpController = makeJumpControl(bloke);
 

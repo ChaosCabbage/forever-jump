@@ -22,7 +22,8 @@ const newGame = () => ({
     players: {},
     randomSeed: Math.floor(Math.random() * 500),
     goal: 5000,
-    winners: []
+    winners: [],
+    hasDeath: false
 });
 
 let currentGame = newGame();
@@ -33,7 +34,8 @@ io.on("connection", function(socket) {
     if (currentGame.state === states.jumping) {
         socket.emit("begin", {
             seed: currentGame.randomSeed,
-            goal: currentGame.goal
+            goal: currentGame.goal,
+            death: currentGame.hasDeath
         });
     }
 
@@ -104,6 +106,7 @@ admin.on("connection", socket => {
         currentGame.randomSeed = Math.floor(Math.random() * 500);
         currentGame.state = states.preparing;
         currentGame.goal = settings.goal;
+        currentGame.hasDeath = settings.death || false;
         console.log(`Goal = ${currentGame.goal}`);
 
         io.emit("prepare", { countdown: 3});
@@ -117,7 +120,8 @@ admin.on("connection", socket => {
             currentGame.state = states.jumping;
             io.emit("begin", {
                 seed: currentGame.randomSeed,
-                goal: currentGame.goal
+                goal: currentGame.goal,
+                death: currentGame.hasDeath
             });
         }, 3000)
     });

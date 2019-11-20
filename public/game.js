@@ -165,8 +165,7 @@ requirejs(
                 stage_limits,
                 switchToDeathState,
                 maxVisibleY,
-                session.goal + settings.first_floor_y, 
-                session.seed
+                session
             );
         }
 

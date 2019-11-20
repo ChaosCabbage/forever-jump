@@ -29,7 +29,8 @@
 
         function beginGame() {
             var goal = parseInt(document.getElementById("goal").value);
-            adminSocket.emit("begin", { goal: goal })
+            var death = document.getElementById("death").checked;
+            adminSocket.emit("begin", { goal: goal, death: death })
         }
         function endGame() {
             adminSocket.emit("stop")
@@ -39,7 +40,8 @@
 
 <body>
     <div id="leaderboard">0 players waiting</div>
-    <input type="number" id="goal" value="5000" />
+    <input type="number" id="goal" value="5000" /><br/>
+    Death? <input type="checkbox" id="death"><br/>
     <button id="go" onclick="beginGame()">Go</button>
     <button id="stop" onclick="endGame()">Stop</button>
 </body>
