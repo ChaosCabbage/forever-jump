@@ -1,4 +1,4 @@
-const _ = require("lodash");
+const opn = require("opn");
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
@@ -7,12 +7,14 @@ const port = 8080;
 
 const states = {
     waiting: "WAITING",
-    jumping: "JUMPING",
-    won: "WON"
+    preparing: "PREPARING",
+    jumping: "JUMPING"
 };
 
 app.use(express.static("public"));
 server.listen(port, () => console.log(`Ready to jump on port ${port}`));
+
+opn(`http://localhost:${port}/admin.html`);
 
 const currentGame = {
     state: states.waiting,
@@ -25,8 +27,6 @@ const currentGame = {
 io.on("connection", function(socket) {
     console.log(`${socket.id} connected`);
 
-    socket.join("current game");
-
     socket.on("position", function(pos) {
         console.log(`${socket.id} is at: ${JSON.stringify(pos)}`);
         const timestamp = Date.now() - pos.ping;
@@ -35,7 +35,6 @@ io.on("connection", function(socket) {
     });
 
     socket.on("disconnect", function() {
-        socket.leave("current game");
         if (currentGame.state === states.waiting) {
             delete currentGame.players[socket.id];
         }
@@ -81,19 +80,38 @@ setInterval(() => {
 const admin = io.of("/admin");
 admin.on("connection", socket => {
     socket.on("begin", settings => {
+        if (currentGame.state !== states.waiting) {
+            return;
+        }
+
         currentGame.randomSeed = Math.floor(Math.random() * 500);
-        currentGame.state = states.jumping;
+        currentGame.state = states.preparing;
         currentGame.goal = settings.goal;
         console.log(`Goal = ${currentGame.goal}`);
-        io.to("current game").emit("begin", {
-            seed: currentGame.randomSeed,
-            goal: currentGame.goal
-        });
+
+        io.emit("prepare", { countdown: 3});
+        setTimeout(() => {
+            io.emit("prepare", { countdown: 2});
+        }, 1000)
+        setTimeout(() => {
+            io.emit("prepare", { countdown: 1});
+        }, 2000)
+        setTimeout(() => {
+            currentGame.state = states.jumping;
+            io.emit("begin", {
+                seed: currentGame.randomSeed,
+                goal: currentGame.goal
+            });
+        }, 3000)
     });
     socket.on("stop", () => {
+        if (currentGame.state !== states.jumping) {
+            return;
+        }
+
         currentGame.state = states.waiting;
         currentGame.players = {};
         currentGame.winners = [];
-        io.to("current game").emit("stop");
+        io.emit("stop");
     });
 });

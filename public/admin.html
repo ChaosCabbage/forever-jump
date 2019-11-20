@@ -10,14 +10,20 @@
             console.log(JSON.stringify(gamestate))
             const n = Object.keys(gamestate.players).length;
             var board = document.getElementById("leaderboard");
+            var go = document.getElementById("go");
+            var stop = document.getElementById("stop");
+
+            go.disabled = true;
+            stop.disabled = true;
 
             if (gamestate.state === "WAITING") {
-                document.getElementById("go").disabled = false;
+                go.disabled = false;
                 board.innerHTML = n + " players waiting."
-            } else {
-                board.innerHTML = n + "players."
+            } else if (gamestate.state === "JUMPING") {
+                stop.disabled = false;
+                board.innerHTML = n + "players"
                 document.getElementById("go").disabled = true;
-                board.append("winners: " + JSON.stringify(gamestate.winners))
+                board.append("| winners: " + JSON.stringify(gamestate.winners))
             }
         })
 
@@ -35,7 +41,7 @@
     <div id="leaderboard">0 players waiting</div>
     <input type="number" id="goal" value="5000" />
     <button id="go" onclick="beginGame()">Go</button>
-    <button id="end" onclick="endGame()">Stop</button>
+    <button id="stop" onclick="endGame()">Stop</button>
 </body>
 
 </html>

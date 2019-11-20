@@ -144,13 +144,14 @@ requirejs(
                 stage_limits,
                 switchToDeathState,
                 maxVisibleY,
-                session.goal,
+                // 40 because the floors and the score are offset by 40 for some reason aagh
+                session.goal + 40, 
                 session.seed
             );
         }
 
         function createWaitingState() {
-            return makeWaitingState(bloke, the_floors, death);
+            return makeWaitingState(bloke, the_floors, death, socket);
         }
 
         function init() {

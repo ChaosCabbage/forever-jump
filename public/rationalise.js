@@ -21,7 +21,7 @@ define(function() {
 
             for (var newBugger of Object.keys(serverGameState)) {
                 if (!(newBugger in otherBuggers)) {
-                    otherBuggers[newBugger] = makeBloke();
+                    otherBuggers[newBugger] = makeBloke(serverGameState[newBugger].name);
                 }
             }
         }

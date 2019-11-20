@@ -30,7 +30,7 @@ define(function() {
         jump_settings,
         floors,
         stage_limits,
-        name = "Monmouth"
+        name = "Joining"
     ) {
         var _current_direction = 1;
 

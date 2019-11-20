@@ -22,7 +22,7 @@
             font-size: 12px;
             line-height: 30px;
             color: #777;
-            background: #4CAF50;
+            background: #580512;
         }
 
         #join input[type="text"],
@@ -34,27 +34,30 @@
             background: #F9F9F9;
             padding: 25px;
             margin: 150px 0;
+            width: 100%;
             box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.2), 0 5px 5px 0 rgba(0, 0, 0, 0.24);
         }
 
         #join input[type="text"] {
             margin: 0 0 5px;
             padding: 10px;
-            font-size: 15px;
+            font-size: 30px;
+            width: 70%;
         }
 
         #join button[type="submit"] {
             cursor: pointer;
             border: none;
-            background: #4CAF50;
+            background: #860000;
             color: #FFF;
             margin: 0 0 5px;
             padding: 10px;
-            font-size: 15px;
+            font-size: 30px;
+            width: 25%;
         }
 
         .container {
-            max-width: 400px;
+            max-width: 800px;
             width: 100%;
             margin: 0 auto;
             position: relative;
@@ -73,10 +76,8 @@
 <body>
     <div class="container">
         <form id="join" action="/game.html" method="GET">
-            <fieldset>
-                <input type="text" name="name" placeholder="Name" required autofocus>
-                <button type="submit">Join</button>
-            </fieldset>
+            <input type="text" name="name" placeholder="Name" required autofocus>
+            <button type="submit">Join</button>
         </form>
     </div>
 </body>

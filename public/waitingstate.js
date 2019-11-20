@@ -1,6 +1,11 @@
 define(["jumpingevents", "settings"], function(makeJumpControl, settings) {
-    return function createWaitingState(bloke, the_floors, death) {
+    return function createWaitingState(bloke, the_floors, death, socket) {
         var jumpController = makeJumpControl(bloke);
+        var banner = ["Gathering", "Souls"];
+
+        socket.on("prepare", function(prepare) {
+            banner = [String(prepare.countdown)];
+        });
 
         function start() {
             the_floors.length = 1;
@@ -18,7 +23,7 @@ define(["jumpingevents", "settings"], function(makeJumpControl, settings) {
         }
 
         function draw(graphics) {
-            graphics.drawGiantBanner(["Gathering", "Souls"]);
+            graphics.drawGiantBanner(banner);
         }
 
         return {
