@@ -32,13 +32,14 @@ define(function() {
 
     function safeStartLimits(
         settings,
+        allowed_widths,
         previous_floor,
         max_jump_width,
         stage_limits,
         direction
     ) {
         var leeway = settings.edge_leeway;
-        var min_width = settings.allowed_floor_widths.lower;
+        var min_width = allowed_widths.lower;
 
         var max_x = previous_floor.right - leeway;
         var min_x = previous_floor.left + leeway;
@@ -63,21 +64,35 @@ define(function() {
         };
     }
 
+    function linearInterp(a, b, factor) {
+        return (1 - factor) * a + factor * b;
+    }
+
     return function generateNewFloor(
         settings,
         previous_floor,
         jump_parabola,
         direction,
         stage_limits,
-        generator
+        generator,
+        goal
     ) {
+        // Linearly interpolate safe limits up to 50%, then we use the minimums.
+        var factor = Math.min(1, 2 * (previous_floor.y / goal));
+        var width_limits = {
+            lower: linearInterp(settings.allowed_floor_widths.lower, settings.allowed_floor_widths_final.lower, factor),
+            upper: linearInterp(settings.allowed_floor_widths.upper, settings.allowed_floor_widths_final.upper, factor)
+        };
+
         var limits = safeStartLimits(
             settings,
+            width_limits,
             previous_floor,
             maxJumpWidth(jump_parabola),
             stage_limits,
             direction
         );
+
         var jump_x = generateBetween(generator, limits.left, limits.right);
 
         // Want to place the new floor somewhere in the range of the parabola,
@@ -96,8 +111,6 @@ define(function() {
             x: landingPoint.x - origin.x + jump_x,
             y: landingPoint.y - origin.y + previous_floor.y
         };
-
-        var width_limits = settings.allowed_floor_widths;
 
         var new_width = generateBetween(
             generator,

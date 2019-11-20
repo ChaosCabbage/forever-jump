@@ -29,7 +29,8 @@ define([
                 createJumpParabola({ x: 0, y: 0 }, direction),
                 direction,
                 stage_limits,
-                generator
+                generator,
+                goal_y
             );
 
             return new_floor.floor;
