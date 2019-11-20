@@ -1,0 +1,31 @@
+.leaderboard {
+    border: solid 2px;
+    padding: 10px;
+    width: 100%;
+    max-width: 200px;
+    margin: 0 auto;
+    background-color: #e6ffcc;
+    font-family: Montserrat, sans-serif;
+  }
+  
+  .won {
+    border-bottom: 0;;
+  }
+  
+  .climbing {
+    border-top: 0;
+    background-color: #e0e0d1;
+  }
+
+  .waiting {
+    background-color: #bfe6f5;
+  }
+  
+  #winners :first-child::before {
+    content: "👑";
+  }
+  
+  #winners :nth-child(n+2)::before {
+    content: "🎀";
+  }
+  

@@ -1,4 +1,5 @@
 const opn = require("opn");
+const _ = require("lodash");
 const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
@@ -16,13 +17,15 @@ server.listen(port, () => console.log(`Ready to jump on port ${port}`));
 
 opn(`http://localhost:${port}/admin.html`);
 
-const currentGame = {
+const newGame = () => ({
     state: states.waiting,
     players: {},
     randomSeed: Math.floor(Math.random() * 500),
     goal: 5000,
     winners: []
-};
+});
+
+let currentGame = newGame();
 
 io.on("connection", function(socket) {
     console.log(`${socket.id} connected`);
@@ -56,7 +59,8 @@ function consumableGameState() {
     return {
         players: playersWithAgeTags(),
         state: currentGame.state,
-        winners: currentGame.winners.map(id => currentGame.players[id].name)
+        winners: currentGame.winners.map(id => currentGame.players[id].name),
+        rank: calculateRank()
     };
 }
 
@@ -72,7 +76,15 @@ function checkForWinners() {
     }
 }
 
+function calculateRank()
+{
+    const ranked = _.sortBy(Object.values(currentGame.players), ["y"]).map(p => p.name);
+    console.log("Rank = " + JSON.stringify(ranked));
+    return ranked;
+}
+
 setInterval(() => {
+    calculateRank();
     checkForWinners();
     io.emit("gamestate", consumableGameState());
 }, 200);
@@ -109,9 +121,7 @@ admin.on("connection", socket => {
             return;
         }
 
-        currentGame.state = states.waiting;
-        currentGame.players = {};
-        currentGame.winners = [];
+        currentGame = newGame();
         io.emit("stop");
     });
 });

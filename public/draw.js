@@ -112,7 +112,7 @@ define(function() {
         var total = approxLineHeight * textLines.length;
         var top = middle - total / 2;
 
-        the_canvas_context.font = "96px Garamond";
+        the_canvas_context.font = "italic 96px Sacramento, serif";
         the_canvas_context.textAlign = "center";
         the_canvas_context.fillStyle = "dark red";
 
