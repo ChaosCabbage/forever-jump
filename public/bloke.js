@@ -109,7 +109,9 @@ define(function() {
             _name = server_dude.name;
             var lag_time_ms = server_dude.age + my_ping;
             console.log(_name + " resolving " + lag_time_ms + "ms lag");
-            update(lag_time_ms / 1000);
+            // Even if they're laggy, just do a single update.
+            // Takes too much processing, especially with lots of players on a mobile. 
+            singleUpdate(lag_time_ms / 1000);
         };
 
         var jump = function() {
