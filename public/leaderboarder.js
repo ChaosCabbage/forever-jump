@@ -16,7 +16,7 @@ define(function() {
         function waitingHTML() {
             return `
             <div class="waiting leaderboard">
-                <h3>Awaiting Destiny</h3>
+                <h3>Awaiting Fate</h3>
                 <hr/>
                 <ul id="climbers">
                     ${toListElements(rank.sort())}
