@@ -6,7 +6,7 @@ define({
     death_start_y: -30, // pixels from the bottom
     death_speed: 10, // pixels per second
     allowed_floor_widths: { lower: 80, upper: 120 }, // pixel range
-    allowed_floor_widths_final: { lower: 40, upper: 80 }, // pixel range
+    allowed_floor_widths_final: { lower: 40, upper: 110 }, // pixel range
     /**
      * Pixels at the edge of each floor ignored when calculating
      * the next jump.

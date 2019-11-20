@@ -30,6 +30,13 @@ let currentGame = newGame();
 io.on("connection", function(socket) {
     console.log(`${socket.id} connected`);
 
+    if (currentGame.state === states.jumping) {
+        socket.emit("begin", {
+            seed: currentGame.randomSeed,
+            goal: currentGame.goal
+        });
+    }
+
     socket.on("position", function(pos) {
         console.log(`${socket.id} is at: ${JSON.stringify(pos)}`);
         const timestamp = Date.now() - pos.ping;
@@ -38,9 +45,7 @@ io.on("connection", function(socket) {
     });
 
     socket.on("disconnect", function() {
-        if (currentGame.state === states.waiting) {
-            delete currentGame.players[socket.id];
-        }
+        delete currentGame.players[socket.id];
     });
 });
 
