@@ -66,7 +66,7 @@ define(function() {
         });
 
         render();
-        setInterval(render, 1000);
+        setInterval(render, 500);
 
         socket.on("stop", function() {
             winners = [];

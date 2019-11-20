@@ -51,7 +51,7 @@ define(function() {
         drawBloke(bloke, viewport_bottom_y, colour);
         var y = yFromGameY(bloke.y(), viewport_bottom_y);
 
-        the_canvas_context.font = "36px cursive";
+        the_canvas_context.font = "36px Vibes, cursive";
         the_canvas_context.textAlign = "center";
 
         the_canvas_context.fillStyle = "black";
@@ -95,14 +95,14 @@ define(function() {
     }
 
     function drawHeight(height) {
-        the_canvas_context.font = "30px Arial";
+        the_canvas_context.font = "30px Montserrat, sans-serif";
         the_canvas_context.textAlign = "start";
         the_canvas_context.fillStyle = "red";
         the_canvas_context.fillText(Math.floor(height).toString(), 28, 50);
     }
 
     function drawMaxScore(height) {
-        the_canvas_context.font = "38px Arial";
+        the_canvas_context.font = "38px Montserrat, sans-serif";
         the_canvas_context.textAlign = "start";
         the_canvas_context.fillStyle = "blue";
         the_canvas_context.fillText(Math.floor(height).toString(), 20, 30);
