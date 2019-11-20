@@ -4,6 +4,9 @@ define(function() {
 
     the_game_canvas.setAttribute("width", 500);
     the_game_canvas.setAttribute("height", the_game_canvas.offsetHeight);
+    window.addEventListener("resize", function() {
+        the_game_canvas.setAttribute("height", the_game_canvas.offsetHeight);
+    });
 
     function w() {
         return the_game_canvas.width;
