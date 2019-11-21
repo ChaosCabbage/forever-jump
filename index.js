@@ -48,6 +48,7 @@ io.on("connection", function(socket) {
 
     socket.on("disconnect", function() {
         delete currentGame.players[socket.id];
+        currentGame.winners = currentGame.winners.filter(id => id != socket.id);
     });
 });
 

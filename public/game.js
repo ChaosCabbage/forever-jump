@@ -113,12 +113,12 @@ requirejs(
                 graphics.drawFloor(floor, view);
             });
             graphics.drawDeathLine(death.y, view);
-            
+
             var maxPercent = getMaxPercentCompletion();
             if (maxPercent !== undefined) {
                 graphics.drawMaxPercentage(maxPercent);
             }
-            
+
             var percentage = getCurrentPercentCompletion();
             if (percentage !== undefined) {
                 graphics.drawHeight(percentage);
@@ -176,6 +176,7 @@ requirejs(
         function init() {
             switchState(createWaitingState());
             socket.on("begin", function(gameSettings) {
+                max_score = 0;
                 session = gameSettings;
                 switchState(createJumpingState());
             });
