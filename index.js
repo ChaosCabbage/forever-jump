@@ -51,6 +51,10 @@ io.on("connection", function(socket) {
     });
 });
 
+function numberOfPlayers() {
+    return Object.keys(currentGame.players).length;
+}
+
 function playersWithAgeTags() {
     const taggedPlayers = {};
     const now = Date.now();
@@ -83,14 +87,18 @@ function checkForWinners() {
     }
 }
 
-function calculateRank()
-{
-    const ranked = _.sortBy(Object.values(currentGame.players), ["y"]).map(p => p.name);
+function calculateRank() {
+    const ranked = _.sortBy(Object.values(currentGame.players), ["y"]).map(
+        p => p.name
+    );
     console.log("Rank = " + JSON.stringify(ranked));
     return ranked;
 }
 
 setInterval(() => {
+    if (currentGame.state === states.jumping && numberOfPlayers() === 0) {
+        currentGame = newGame();
+    }
     calculateRank();
     checkForWinners();
     io.emit("gamestate", consumableGameState());
@@ -102,6 +110,9 @@ admin.on("connection", socket => {
         if (currentGame.state !== states.waiting) {
             return;
         }
+        if (numberOfPlayers() === 0) {
+            return;
+        }
 
         currentGame.randomSeed = Math.floor(Math.random() * 500);
         currentGame.state = states.preparing;
@@ -109,13 +120,13 @@ admin.on("connection", socket => {
         currentGame.hasDeath = settings.death || false;
         console.log(`Goal = ${currentGame.goal}`);
 
-        io.emit("prepare", { countdown: 3});
+        io.emit("prepare", { countdown: 3 });
         setTimeout(() => {
-            io.emit("prepare", { countdown: 2});
-        }, 1000)
+            io.emit("prepare", { countdown: 2 });
+        }, 1000);
         setTimeout(() => {
-            io.emit("prepare", { countdown: 1});
-        }, 2000)
+            io.emit("prepare", { countdown: 1 });
+        }, 2000);
         setTimeout(() => {
             currentGame.state = states.jumping;
             io.emit("begin", {
@@ -123,7 +134,7 @@ admin.on("connection", socket => {
                 goal: currentGame.goal,
                 death: currentGame.hasDeath
             });
-        }, 3000)
+        }, 3000);
     });
     socket.on("stop", () => {
         if (currentGame.state !== states.jumping) {
