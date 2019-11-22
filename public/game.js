@@ -182,6 +182,7 @@ requirejs(
             });
             socket.on("stop", function() {
                 max_score = 0;
+                session = undefined;
                 switchState(createWaitingState());
             });
         }
