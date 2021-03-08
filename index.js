@@ -4,7 +4,7 @@ const express = require("express");
 const app = express();
 const server = require("http").createServer(app);
 const io = require("socket.io")(server, { pingInterval: 5000 });
-const port = 8080;
+const port = process.env.PORT || 8080;
 
 const states = {
     waiting: "WAITING",
@@ -40,9 +40,9 @@ io.on("connection", function(socket) {
     }
 
     socket.on("position", function(pos) {
-        console.log(`${socket.id} is at: ${JSON.stringify(pos)}`);
+        //console.log(`${socket.id} is at: ${JSON.stringify(pos)}`);
         const timestamp = Date.now() - pos.ping;
-        console.log(`Sent at ${timestamp} (ping ${pos.ping})`);
+        //console.log(`Sent at ${timestamp} (ping ${pos.ping})`);
         currentGame.players[socket.id] = { ...pos, timestamp };
     });
 
@@ -92,7 +92,7 @@ function calculateRank() {
     const ranked = _.sortBy(Object.values(currentGame.players), ["y"]).map(
         p => p.name
     );
-    console.log("Rank = " + JSON.stringify(ranked));
+    //console.log("Rank = " + JSON.stringify(ranked));
     return ranked;
 }
 

@@ -1,4 +1,4 @@
-define(["jumpingevents", "settings"], function(makeJumpControl, settings) {
+define(["jumpingEvents", "settings"], function(makeJumpControl, settings) {
     return function createWaitingState(bloke, the_floors, death, socket) {
         var jumpController = makeJumpControl(bloke);
         var banner = ["Gathering", "Souls"];

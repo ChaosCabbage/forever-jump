@@ -3,7 +3,7 @@ define([
     "floorgeneration",
     "settings",
     "random",
-    "jumpingevents"
+    "jumpingEvents"
 ], function(makeParabola, floorGen, settings, makeGenerator, makeJumpControl) {
     function createJumpParabola(start_position, direction) {
         return makeParabola(
